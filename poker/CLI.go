@@ -9,7 +9,7 @@ import (
 )
 
 const (
-	PlayerPrompt = "Please enter the number of players: "
+	PlayerPrompt         = "Please enter the number of players: "
 	BadPlayerInputErrMsg = "Bad value received for number of players, please try again with a number"
 )
 
@@ -31,12 +31,12 @@ func (cli *CLI) PlayPoker() {
 	fmt.Fprint(cli.out, PlayerPrompt)
 
 	numberOfPlayers, err := strconv.Atoi(cli.readLine())
-	if nil != err  {
+	if nil != err {
 		fmt.Fprint(cli.out, BadPlayerInputErrMsg)
 		return
 	}
 
-	cli.game.Start(numberOfPlayers)
+	cli.game.Start(numberOfPlayers, cli.out)
 
 	winner := extractWinner(cli.readLine())
 
