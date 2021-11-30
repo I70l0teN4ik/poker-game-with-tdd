@@ -84,14 +84,18 @@ func AssertScheduledAlert(t *testing.T, got, want ScheduledAlert) {
 }
 
 type GameSpy struct {
-	StartedWith  int
-	FinishedWith string
-	StartCalled  bool
+	StartCalled bool
+	StartedWith int
+	BlindAlert  []byte
+
+	FinishedCalled bool
+	FinishedWith   string
 }
 
-func (g *GameSpy) Start(numberOfPlayers int, alertsDestination io.Writer) {
-	g.StartedWith = numberOfPlayers
+func (g *GameSpy) Start(numberOfPlayers int, out io.Writer) {
 	g.StartCalled = true
+	g.StartedWith = numberOfPlayers
+	out.Write(g.BlindAlert)
 }
 
 func (g *GameSpy) Finish(winner string) {

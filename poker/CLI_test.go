@@ -6,6 +6,7 @@ import (
 	"strings"
 	"tdd/poker"
 	"testing"
+	"time"
 )
 
 func Test_CLI(t *testing.T) {
@@ -55,8 +56,19 @@ func userInput(inputs ...interface{}) *strings.Reader {
 	return strings.NewReader(s)
 }
 
+func retryAsync(f func() bool) bool {
+	deadline := time.Now().Add(500 * time.Millisecond)
+	for time.Now().Before(deadline) {
+		if f() {
+			return true
+		}
+	}
+	return false
+}
+
 func assertFinishCalledWith(t *testing.T, game *poker.GameSpy, winner string) {
-	if game.FinishedWith != winner {
+	t.Helper()
+	if passed := retryAsync(func() bool { return game.FinishedWith == winner }); !passed {
 		t.Errorf("wanted %s to be a winner but got %s", winner, game.FinishedWith)
 	}
 }
@@ -70,7 +82,7 @@ func assertGameNotStarted(t *testing.T, game *poker.GameSpy) {
 
 func assertGameStartedWith(t *testing.T, game *poker.GameSpy, count int) {
 	t.Helper()
-	if game.StartedWith != count {
+	if passed := retryAsync(func() bool { return game.StartedWith == count }); !passed {
 		t.Errorf("wanted Start called with %d but got %d", count, game.StartedWith)
 	}
 }
