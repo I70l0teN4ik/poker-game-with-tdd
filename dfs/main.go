@@ -3,23 +3,47 @@ package main
 import "fmt"
 
 func main() {
-	graph := map[string][]string{
-		"a": {"b", "c"},
-		"b": {"d"},
-		"c": {"e"},
-		"d": {"f"},
-		"e": {},
-		"f": {},
-	}
-	dfsIterative(graph, "a")
-	fmt.Println("")
-	fmt.Print(dfsRecursive(graph, "a"))
-	fmt.Println("")
-	dfsRecursive(graph, "e")
+	nodes := [][]string{{"a", "b"}, {"a", "c"}, {"b", "d"}, {"c", "e"}, {"d", "f"}}
+	graph := buildDirectedGraph(nodes)
+
 	fmt.Println(hasPath(graph, "a", "f"))
 	fmt.Println(hasPath(graph, "f", "f"))
 	fmt.Println(hasPath(graph, "f", "a"))
 	fmt.Println(hasPath(graph, "f", "e"))
+}
+
+func buildGraph(nodes [][]string, directed bool) map[string][]string {
+	graph := make(map[string][]string)
+	for _, edge := range nodes {
+		x, y := edge[0], edge[1]
+		graph[x] = append(graph[x], y)
+
+		if _, ok := graph[y]; !ok && directed {
+			graph[y] = []string{}
+		} else if !directed {
+			graph[y] = append(graph[y], x)
+		}
+	}
+	return graph
+}
+
+func buildDirectedGraph(nodes [][]string) map[string][]string {
+
+	graph := make(map[string][]string)
+
+	for _, edge := range nodes {
+		src, dist := edge[0], edge[1]
+
+		if _, ok := graph[src]; false == ok {
+			graph[src] = []string{}
+		}
+		if _, ok := graph[dist]; false == ok {
+			graph[dist] = []string{}
+		}
+		graph[src] = append(graph[src], dist)
+
+	}
+	return graph
 }
 
 func hasPath(graph map[string][]string, root, target string) bool {
@@ -62,14 +86,17 @@ func (s *stack) lastIndex() int {
 	return s.len() - 1
 }
 
-func dfsIterative(graph map[string][]string, root string) {
+func dfsIterative(graph map[string][]string, root string) []string {
 	stack := stack{list: []string{root}}
+	var nodes []string
 
 	for stack.len() > 0 {
 		current := stack.pop()
-		fmt.Print(current)
+		nodes = append(nodes, current)
 		for _, v := range graph[current] {
 			stack.push(v)
 		}
 	}
+
+	return nodes
 }
