@@ -21,3 +21,23 @@ func Test_islandCount(t *testing.T) {
 		})
 	}
 }
+
+func Test_minIslandSize(t *testing.T) {
+	tests := []struct {
+		name string
+		grid [][]string
+		want int
+	}{
+		{"one row one isle", [][]string{{water, land, water, water}}, 1},
+		{"one row 2 isles", [][]string{{water, land, land, water}}, 2},
+		{"2 and 1", [][]string{{water, land, water, water, water}, {water, land, water, land, water}}, 1},
+		{"3", [][]string{{land, water, water, water, water}, {land, land, water, water, water}}, 3},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := minIslandSize(tt.grid); got != tt.want {
+				t.Errorf("minIslandSize() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}

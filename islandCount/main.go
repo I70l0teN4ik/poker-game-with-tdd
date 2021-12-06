@@ -1,6 +1,9 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"math"
+)
 
 const (
 	water = "w"
@@ -13,15 +16,11 @@ func main() {
 }
 
 func islandCount(grid [][]string) (counter int) {
-	visited := make([][]bool, len(grid))
-	cz := len(grid[0])
-	for i := range visited {
-		visited[i] = make([]bool, cz)
-	}
+	visited := initVisitedGrid(grid)
 
 	for r := range grid {
 		for c := range grid[r] {
-			if true == explore(grid, r, c, visited) {
+			if explore(grid, r, c, visited) > 0 {
 				counter++
 			}
 		}
@@ -30,9 +29,23 @@ func islandCount(grid [][]string) (counter int) {
 	return
 }
 
+func minIslandSize(grid [][]string) int {
+	visited := initVisitedGrid(grid)
+	size := math.MaxInt
+
+	for r := range grid {
+		for c := range grid[r] {
+			if currSize := explore(grid, r, c, visited); currSize > 0 && currSize < size {
+				size = currSize
+			}
+		}
+	}
+	return size
+}
+
 var dr, dc = [4]int{-1, 1, 0, 0}, [4]int{0, 0, -1, 1}
 
-func explore(grid [][]string, r int, c int, visited [][]bool) (foundLend bool) {
+func explore(grid [][]string, r int, c int, visited [][]bool) (size int) {
 	if outOfGrid(r, len(grid), c, len(grid[0])) {
 		return
 	}
@@ -43,24 +56,26 @@ func explore(grid [][]string, r int, c int, visited [][]bool) (foundLend bool) {
 		return
 	}
 	visited[r][c] = true
+	size++
 
 	for i := 0; i < 4; i++ {
 		rr := r + dr[i]
 		cc := c + dc[i]
-		explore(grid, rr, cc, visited)
+		size += explore(grid, rr, cc, visited)
 	}
 
-	return true
+	return
 }
 
 func outOfGrid(r int, R int, c int, C int) bool {
 	return r < 0 || r >= R || c < 0 || c >= C
 }
 
-func dfs(graph map[string][]string, root string) []string {
-	nodes := []string{root}
-	for _, v := range graph[root] {
-		nodes = append(nodes, dfs(graph, v)...)
+func initVisitedGrid(grid [][]string) [][]bool {
+	visited := make([][]bool, len(grid))
+	cz := len(grid[0])
+	for i := range visited {
+		visited[i] = make([]bool, cz)
 	}
-	return nodes
+	return visited
 }
