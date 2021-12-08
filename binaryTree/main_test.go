@@ -72,3 +72,67 @@ func Test_traverseTree(t *testing.T) {
 		})
 	}
 }
+
+func Test_NumNode(t *testing.T) {
+	nodes := buildNumTree([]int{})
+	tests := []struct {
+		node *NumNode
+		want int
+	}{
+		{&nodes[0], 15},
+		{&nodes[1], 8},
+		{&nodes[2], 7},
+	}
+	for _, tt := range tests {
+		name := fmt.Sprintf("%v sums up to %d", dfsTraversal(tt.node), tt.want)
+		t.Run(name, func(t *testing.T) {
+			if got := nodeSum(tt.node); got != tt.want {
+				t.Errorf("nodeSum() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+
+	minTests := []struct {
+		node *NumNode
+		want int
+	}{
+		{&nodes[0], 0},
+		{&nodes[1], 1},
+		{&nodes[2], 2},
+		{&nodes[3], 3},
+	}
+	for _, tt := range minTests {
+		name := fmt.Sprintf("%d is min in %v", tt.want, dfsTraversal(tt.node))
+		t.Run(name, func(t *testing.T) {
+			if got := treeMinVal(tt.node); got != tt.want {
+				t.Errorf("treeMinVal() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+	for _, tt := range minTests {
+		name := fmt.Sprintf("rec %d is min in %v", tt.want, dfsTraversal(tt.node))
+		t.Run(name, func(t *testing.T) {
+			if got := treeMinValRec(tt.node); got != tt.want {
+				t.Errorf("treeMinValRec() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+
+	maxPathTests := []struct {
+		node *NumNode
+		want int
+	}{
+		{&nodes[0], 7},
+		{&nodes[1], 5},
+		{&nodes[2], 7},
+		{&nodes[3], 3},
+	}
+	for _, tt := range maxPathTests {
+		name := fmt.Sprintf("rec %d max path in %v", tt.want, dfsTraversal(tt.node))
+		t.Run(name, func(t *testing.T) {
+			if got := treeMaxPathRec(tt.node); got != tt.want {
+				t.Errorf("treeMaxPathRec() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}

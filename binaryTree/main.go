@@ -1,6 +1,9 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"math"
+)
 
 func main() {
 	nodes := buildTree()
@@ -82,6 +85,12 @@ type Node struct {
 	right *Node
 }
 
+type NumNode struct {
+	val   int
+	left  *NumNode
+	right *NumNode
+}
+
 func buildTree() []Node {
 	d := Node{"d", nil, nil}
 	e := Node{"e", nil, nil}
@@ -91,4 +100,91 @@ func buildTree() []Node {
 	a := Node{"a", &b, &c}
 
 	return []Node{a, b, c, d, e, f}
+}
+
+func buildNumTree(numbers []int) []NumNode {
+	f := NumNode{5, nil, nil}
+	e := NumNode{4, nil, nil}
+	d := NumNode{3, nil, nil}
+	c := NumNode{2, &f, nil}
+	b := NumNode{1, &d, &e}
+	a := NumNode{0, &b, &c}
+
+	return []NumNode{a, b, c, d, e, f}
+}
+
+func dfsTraversal(root *NumNode) []int {
+	var result []int
+	if nil == root {
+		return result
+	}
+	result = append(result, root.val)
+	result = append(result, dfsTraversal(root.left)...)
+	result = append(result, dfsTraversal(root.right)...)
+
+	return result
+}
+
+func nodeSum(root *NumNode) int {
+	if nil == root {
+		return 0
+	}
+	return root.val + nodeSum(root.left) + nodeSum(root.right)
+}
+
+func treeMinVal(root *NumNode) int {
+	min := math.MaxInt
+	if nil == root {
+		return min
+	}
+	queue := []*NumNode{root}
+
+	for len(queue) > 0 {
+		node := queue[0]
+		queue = queue[1:]
+		if node.val < min {
+			min = node.val
+		}
+
+		if node.left != nil {
+			queue = append(queue, node.left)
+		}
+		if node.right != nil {
+			queue = append(queue, node.right)
+		}
+	}
+
+	return min
+}
+
+func treeMinValRec(node *NumNode) int {
+	if nil == node {
+		return math.MaxInt
+	}
+
+	return min(node.val, min(treeMinValRec(node.left), treeMinValRec(node.right)))
+}
+
+func treeMaxPathRec(node *NumNode) int {
+	if nil == node {
+		return math.MinInt
+	}
+	if nil == node.left && nil == node.right {
+		return node.val
+	}
+
+	return node.val + max(treeMaxPathRec(node.left), treeMaxPathRec(node.right))
+}
+
+func min(x, y int) int {
+	if x < y {
+		return x
+	}
+	return y
+}
+func max(x, y int) int {
+	if x > y {
+		return x
+	}
+	return y
 }
