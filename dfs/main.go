@@ -4,7 +4,7 @@ import "fmt"
 
 func main() {
 	nodes := [][]string{{"a", "b"}, {"a", "c"}, {"b", "d"}, {"c", "e"}, {"d", "f"}}
-	graph := buildDirectedGraph(nodes)
+	graph := buildGraph(nodes, true)
 
 	fmt.Println(hasPath(graph, "a", "f"))
 	fmt.Println(hasPath(graph, "f", "f"))
@@ -23,25 +23,6 @@ func buildGraph(nodes [][]string, directed bool) map[string][]string {
 		} else if !directed {
 			graph[y] = append(graph[y], x)
 		}
-	}
-	return graph
-}
-
-func buildDirectedGraph(nodes [][]string) map[string][]string {
-
-	graph := make(map[string][]string)
-
-	for _, edge := range nodes {
-		src, dist := edge[0], edge[1]
-
-		if _, ok := graph[src]; false == ok {
-			graph[src] = []string{}
-		}
-		if _, ok := graph[dist]; false == ok {
-			graph[dist] = []string{}
-		}
-		graph[src] = append(graph[src], dist)
-
 	}
 	return graph
 }
