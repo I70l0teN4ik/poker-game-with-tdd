@@ -116,8 +116,8 @@ func Test_stripIslandsOnEdges(t *testing.T) {
 			},
 			[][]string{
 				{water, water, water, water, water, water},
-				{water, land, land, water, land, land},
-				{water, land, water, land, land, water},
+				{water, land, land, water, water, water},
+				{water, land, water, water, water, water},
 				{water, water, water, water, water, water},
 			},
 		},

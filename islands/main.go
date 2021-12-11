@@ -45,10 +45,13 @@ func minIslandSize(grid [][]string) int {
 
 func stripIslandsOnEdges(grid [][]string) [][]string {
 	visited := initVisitedGrid(grid)
-
+	R := len(grid)
+	C := len(grid[0])
 	for r := range grid {
 		for c := range grid[r] {
-			explore(grid, r, c, visited)
+			if onTheEdge(r, R, c, C) {
+				explore(grid, r, c, visited)
+			}
 		}
 	}
 
@@ -59,6 +62,7 @@ func stripIslandsOnEdges(grid [][]string) [][]string {
 			}
 		}
 	}
+
 	return grid
 }
 
@@ -81,6 +85,7 @@ func explore(grid [][]string, r int, c int, visited [][]node) (size int) {
 
 	if onTheEdge(r, rz, c, cz) || connectedToEdge(r, c, visited) {
 		visited[r][c].toRemove = true
+		size++
 	}
 
 	for i := 0; i < 4; i++ {
